@@ -1,7 +1,7 @@
 {
-    "name": "20200829testtypescript",
+    "name": "nodejs_typescript_template",
     "version": "1.0.0",
-    "description": "",
+    "description": "template setup for a TypeScript project running on NodeJS",
     "main": "index.js",
     "scripts": {
       "start": "npm run build && node build/index.js",
@@ -10,8 +10,9 @@
       "test": "mocha -r ts-node/register tests/**/*.spec.ts --colors" 
     },
     "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "author": "Ludovic Deparis",
+    "homepage": "https://github.com/maldestor95/nodejs_typescript_template",
+    "license": "MIT",
     "devDependencies": {
         "@types/chai": "^4.2.12",
         "@types/mocha": "^8.0.3",
