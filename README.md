@@ -1,12 +1,10 @@
-# nodejs typescript template
+# fitness tracker
 
 ## Introduction
-The objective of this repository is a template setup for a TypeScript project running on NodeJS
+My Fitness tracker for the GYM
 
 ## Installation
-* clone the repository
-* remove repository dependency (break link to this template)
-* edit package.json to change project description, credentials...
+`npm install`
 
 ## Development script
 
