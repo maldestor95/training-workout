@@ -1,7 +1,11 @@
-console.log("text")
-function print(text:string){
-    console.log(text);
+import {Serie, Workout} from './workout'
+import {Equipment} from './equipment'
 
-}
+const ser= new Serie({repetition:12,level:2,weight:100})
+ser.repetition=10
+console.log(ser)
 
-print('Hello World')
+console.log(Object.values(Equipment))
+const wk=new Workout({description:"toto",repetition:10,equipment:Equipment.legpress })
+wk.changeDuration(10)
+console.log(wk)
