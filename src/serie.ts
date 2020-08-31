@@ -1,22 +1,28 @@
-
 import {Status} from './status'
 
-export interface serieInterface {
+export interface serieData {
     repetition: number;
     weight ? : number;
     level ? : number;
     durationInMinutes ? : number
 }
+export interface serieInterface extends serieData{
+    changeWeight?:(newWeight: number)=>void
+    changeLevel?:(newLevel: number)=>void
+    changeDuration?:(newduration: number)=>void
+    reset?:()=>void
+    stringify?:()=>string
+    changeStatus?:(newStatus:Status)=>void
+}
 
-
-export class Serie {
-    repetition?: number;
+export class Serie implements serieInterface{
+    repetition: number;
     weight ? : number;
     level ? : number;
     durationInMinutes ? : number
     status?:Status=Status.open
 
-    constructor(DataSerie: serieInterface) {
+    constructor(DataSerie: serieData) {
         this.repetition = DataSerie.repetition
         if (DataSerie.weight) this.weight = DataSerie.weight
         if (DataSerie.level) this.level = DataSerie.level
