@@ -1,4 +1,4 @@
-import {Status} from './status'
+import {Status as StatusEnum} from './status'
 
 export interface serieData {
     repetition: number;
@@ -10,9 +10,10 @@ export interface serieInterface extends serieData{
     changeWeight?:(newWeight: number)=>void
     changeLevel?:(newLevel: number)=>void
     changeDuration?:(newduration: number)=>void
+    changeRepetition?:(newRepetition: number)=>void
     reset?:()=>void
     stringify?:()=>string
-    changeStatus?:(newStatus:Status)=>void
+    changeStatus?:(newStatus:StatusEnum)=>void
 }
 
 export class Serie implements serieInterface{
@@ -20,7 +21,7 @@ export class Serie implements serieInterface{
     weight ? : number;
     level ? : number;
     durationInMinutes ? : number
-    status?:Status=Status.open
+    status?:StatusEnum=StatusEnum.open
 
     constructor(DataSerie: serieData) {
         this.repetition = DataSerie.repetition
@@ -38,6 +39,9 @@ export class Serie implements serieInterface{
     changeDuration(newduration: number):void {
         this.durationInMinutes = newduration<=0?undefined:newduration
     }
+    changeRepetition(newRepetition: number):void {
+        this.repetition = newRepetition<=0?0:newRepetition
+    }
     reset():void {
         this.weight=undefined
         this.level=undefined
@@ -46,7 +50,7 @@ export class Serie implements serieInterface{
     stringify():string{
         return JSON.stringify(this)
     }
-    changeStatus(newStatus:Status):void{
+    changeStatus(newStatus:StatusEnum):void{
         this.status=newStatus
     }
 }
