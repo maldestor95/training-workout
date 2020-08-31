@@ -9,7 +9,7 @@
         "start:dev": "nodemon",
         "build": "rimraf ./build && tsc",
         "test": "mocha -r ts-node/register tests/**/*.spec.ts --colors",
-        "test:dev": "mocha -r ts-node/register tests/**/*.spec.ts --colors --bail --watch --watch-files tests/ src/"
+        "test:dev": "mocha -r ts-node/register tests/**/*.spec.ts --colors --bail --watch --watch-files tests/**/* --watch-files src/**/*"
     },
     "keywords": [],
     "author": "Ludovic Deparis",
