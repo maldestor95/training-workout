@@ -8,8 +8,8 @@
         "lint": "eslint . --ext .ts",
         "start:dev": "nodemon",
         "build": "rimraf ./build && tsc",
-        "test": "mocha -r ts-node/register tests/**/*.spec.ts --colors",
-        "test:dev": "mocha -r ts-node/register tests/**/*.spec.ts --colors --bail --watch --watch-files tests/**/* --watch-files src/**/*"
+        "test": "mocha -r ts-node/register src/**/__tests__/*.spec.ts --colors",
+        "test:dev": "mocha -r ts-node/register src/**/__tests__/*.spec.ts --colors --bail --watch --watch-files src/**/*"
     },
     "keywords": [],
     "author": "Ludovic Deparis",
