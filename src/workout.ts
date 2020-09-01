@@ -1,22 +1,26 @@
-import {Serie, serieData} from '../src/serie'
+import {Serie, serieInterface} from '../src/serie'
 import {Equipment} from './equipment'
 import {Status} from './status'
 
-export interface workoutInterface {
+export interface workoutData {
     description?: string
     equipment?:Equipment
     serie?:Array<Serie>
-    addSerie?:(newSerie:Serie )=>void
+}
+export interface workoutInterface extends workoutData{
+    addSerie:(newSerie:Serie )=>void
     deleteSerie?:(serieNumber:number)=>string
     updateProgressOnSerie?:(serieNumber:number, newStatus:Status)=>string 
-
+    getStatus:()=>Status
+    getWorkoutStatus:()=>workoutData
+    closeAllSerie?:()=>void
 }
 
-export class Workout {
-    private description: string 
-    private equipment:Equipment
+export class Workout implements workoutInterface{
+    description: string 
+    equipment:Equipment
     serie:Array<Serie>
-    constructor(workoutDetails: workoutInterface) {
+    constructor(workoutDetails: workoutData) {
         this.serie=[]
         this.description=""
         
@@ -44,7 +48,7 @@ export class Workout {
 
         return "OK"
     }
-    changeSerie(serieNumber:number, serieParameter:serieData):string {
+    changeSerie(serieNumber:number, serieParameter:serieInterface):string {
         if (serieNumber<0 || serieNumber >this.serie.length-1) return `Error: Can't access serie #${serieNumber}`
 
         if (serieParameter.durationInMinutes) this.serie[serieNumber].changeDuration(serieParameter.durationInMinutes)
@@ -64,11 +68,14 @@ export class Workout {
         const isOngoing:number= this.serie.filter(x=>x.status!=Status.closed).length
         return isOngoing>0?Status.ongoing:Status.closed
     }
-    getWorkoutStatus():workoutInterface{
+    getWorkoutStatus():workoutData{
         return     {
             description:this.description,
             equipment:this.equipment,
             serie:this.serie
         }
+    }
+    closeAllSerie():void{
+        if (this.serie) this.serie.map(ser=>ser.changeStatus(Status.closed))
     }
 }

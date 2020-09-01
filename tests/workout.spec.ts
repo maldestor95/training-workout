@@ -1,9 +1,9 @@
-import {  Workout, workoutInterface} from '../src/workout';
+import {  Workout, workoutInterface, workoutData} from '../src/workout';
 import {  Serie } from '../src/serie';
 import {  Session} from '../src/session'
 
 import { Equipment } from '../src/equipment';
-import { Status } from '../src/status';
+import { Status,StateEnum } from '../src/status';
 
 import {
   expect
@@ -48,10 +48,14 @@ describe(`Training test run at ${(new Date).toLocaleTimeString()}` ,() => {
     })
   });
   describe('workout',()=>{
-    const wkData:workoutInterface={
+    const wkData:workoutData={
       description:"toot",
       equipment:Equipment.legpress,
     }
+    const wk=new Workout(wkData)
+    wk.addSerie(new Serie({repetition:15,weight:30}))
+    wk.addSerie(new Serie({repetition:5,weight:30}))
+    wk.addSerie(new Serie({repetition:12,weight:35}))
     it('should create a workout',()=>{
       const wk=new Workout(wkData)
       expect(wk.getWorkoutStatus().equipment).to.equal(Equipment.legpress)
@@ -117,43 +121,92 @@ describe(`Training test run at ${(new Date).toLocaleTimeString()}` ,() => {
       wk.serie[2].changeStatus(Status.closed)
       expect(wk.getStatus()).to.eq(Status.closed)
     })
+    it('should close the workout',()=>{
+      expect(wk.getStatus()).to.eq(Status.ongoing)
+      wk.closeAllSerie()
+      expect(wk.getStatus()).to.eq(Status.closed)
+
+    })
   })
-    /*describe('session',()=>{
-      it('should create a training session',()=>{
-        let trainingSession= new Session('Plan1')
-        expect(trainingSession.title).to.eq('Plan1')
-        expect(trainingSession.description).to.eq('')
+  describe('session',()=>{
+    const trainingSession= new Session('Plan1','Description du Plan')
+    trainingSession.addWorkout({description:"jambes",equipment:Equipment.legpress})
+    const wk:workoutInterface=trainingSession.workoutList[0]
+    wk.addSerie(new Serie({repetition:15,weight:30}))
+    wk.addSerie(new Serie({repetition:12,weight:35}))
+    wk.addSerie(new Serie({repetition:10,weight:40}))
 
-        trainingSession= new Session('Plan2','Description du Plan2')
-        expect(trainingSession.title).to.eq('Plan2')
-        expect(trainingSession.description).to.eq('Description du Plan2')
-      })
-      it('should get training session details',()=>{
-        const trainingSession= new Session('Plan1','Description du Plan')
-        expect(trainingSession.title).to.eq('Plan1')
-        
-        const Alldetails=trainingSession.getSessionDetails()
-        const {date:detailDate,...details}=Alldetails
-        expect(typeof detailDate).to.eq(typeof new Date)
-        expect(details).to.deep.eq({
-          description:'Description du Plan',
-          status:Status.open,
-          title:'Plan1',
-          workoutList:[]
-        })
-      })
-      
+    it('should create a training session',()=>{
+      let trainingSession= new Session('Plan1')
+      expect(trainingSession.title).to.eq('Plan1')
+      expect(trainingSession.description).to.eq('')
+
+      trainingSession= new Session('Plan2','Description du Plan2')
+      expect(trainingSession.title).to.eq('Plan2')
+      expect(trainingSession.description).to.eq('Description du Plan2')
     })
-    it.only('should create a training session',()=>{
+    it('should get training session details',()=>{
       const trainingSession= new Session('Plan1','Description du Plan')
-      trainingSession.addWorkout({description:"jambes",equipment:Equipment.legpress})
-      let wk:workoutInterface=trainingSession.workoutList[0]
-      const ser:serieInterface={repetition:10,weight:5}
-      wk.addSerie(ser)
+      expect(trainingSession.title).to.eq('Plan1')
+      
+      let workouts=trainingSession.getSessionDetails(StateEnum.all)
+      expect(workouts.length).to.eq(0)
+      
+      trainingSession.addWorkout({description:'1st'})
+      trainingSession.workoutList[0].addSerie(new Serie({repetition:5,durationInMinutes:60}))
+      console.log(workouts)
+      workouts=trainingSession.getSessionDetails(StateEnum.all)
+      expect(workouts.length).to.eq(1)
+      workouts=trainingSession.getSessionDetails(StateEnum.open)
+      expect(workouts.length).to.eq(1)
+      workouts=trainingSession.getSessionDetails(StateEnum.closed)
+      expect(workouts.length).to.eq(0)
+      
+      trainingSession.workoutList[0].updateProgressOnSerie?trainingSession.workoutList[0].updateProgressOnSerie(0,Status.closed):null
+      
+      workouts=trainingSession.getSessionDetails(StateEnum.all)
+      expect(workouts.length).to.eq(1)
+      workouts=trainingSession.getSessionDetails(StateEnum.open)
+      expect(workouts.length).to.eq(0)
+      workouts=trainingSession.getSessionDetails(StateEnum.closed)
+      expect(workouts.length).to.eq(1)
 
-      trainingSession.addWorkout({description:"cardio",equipment:Equipment.treadmill})
-      console.log(trainingSession.getSessionDetails())
+
     })
-    // it('should create a training session',()=>{})
-  }*/
+    it('should create a training session',()=>{
+      
+      trainingSession.addWorkout({description:"cardio",equipment:Equipment.treadmill})
+      let wk1:workoutInterface=trainingSession.workoutList[1]
+      wk1.addSerie(new Serie({repetition:10,weight:40}))
+      wk1.addSerie(new Serie({repetition:15,weight:45}))
+
+      trainingSession.addWorkout({description:"cardio2",equipment:Equipment.none})
+      wk1=trainingSession.workoutList[2]
+      wk1.addSerie(new Serie({repetition:1,durationInMinutes:15}))
+      wk1.addSerie(new Serie({repetition:1,durationInMinutes:10}))
+
+      expect(trainingSession.workoutList.length).to.eq(3)
+      expect(trainingSession.workoutList[0].getStatus()).to.eq(Status.ongoing)
+
+    })
+    it('should close a workout within the session',()=>{
+      expect(trainingSession.workoutList.length).to.eq(3)
+      trainingSession.closeWorkout(-1)
+      expect(trainingSession.workoutList.length).to.eq(3)
+
+      trainingSession.closeWorkout(10)
+      expect(trainingSession.workoutList.length).to.eq(3)
+
+      expect(trainingSession.workoutList[0].getStatus()).to.eq(Status.ongoing)      
+      trainingSession.closeWorkout(0) 
+      expect(trainingSession.workoutList[0].getStatus()).to.eq(Status.closed)  
+
+      expect(trainingSession.workoutList.length).to.eq(3)
+    })
+    it('should check is session is complete',()=>{
+      expect(trainingSession.isSessionComplete()).to.eq(false)
+      trainingSession.workoutList.map(wk=>wk.closeAllSerie?wk.closeAllSerie():null)
+      expect(trainingSession.isSessionComplete()).to.eq(true)
+    })
+  })
 })
