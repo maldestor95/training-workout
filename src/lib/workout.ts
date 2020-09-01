@@ -1,4 +1,4 @@
-import {Serie, serieInterface} from '../src/serie'
+import {Serie, serieInterface} from './serie'
 import {Equipment} from './equipment'
 import {Status} from './status'
 

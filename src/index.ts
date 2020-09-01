@@ -1,11 +1,6 @@
-import {Serie, Workout} from './workout'
-import {Equipment} from './equipment'
+export {Status, StateEnum} from './lib/status'
+export { Equipment } from './lib/equipment';
+export {  Workout, workoutInterface, workoutData} from './lib/workout';
+export {  Serie } from './lib/serie';
+export {  Session} from './lib/session'
 
-const ser= new Serie({repetition:12,level:2,weight:100})
-ser.repetition=10
-console.log(ser)
-
-console.log(Object.values(Equipment))
-const wk=new Workout({description:"toto",repetition:10,equipment:Equipment.legpress })
-wk.changeDuration(10)
-console.log(wk)
