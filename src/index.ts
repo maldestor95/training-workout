@@ -1,4 +1,2 @@
-import {StateEnum} from './package/training'
-
-console.log("training.Equipment")
-console.log(StateEnum)
+import * as training from './package/training'
+export {training}
